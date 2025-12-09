@@ -1,0 +1,74 @@
+using System;
+
+namespace MyApplication
+{
+  class Program
+   {
+     static string[] todoList = new string[10];
+     static int taskCount = 0;
+
+     static void Main()
+     {
+         while (true)
+	 {
+	    Console.Clear();
+	    Console.WriteLine("TODO List Manager Menu: ");
+	    Console.WriteLine("1. Add a Task");
+	    Console.WriteLine("2. View All Tasks");
+	    Console.WriteLine("3. Mark Task Complete");
+	    Console.WriteLine("4. Delete a Task");
+	    Console.WriteLine("5. View Incomplete Tasks");
+	    Console.WriteLine("6. Exit");
+	    Console.Write("Enter your choice: ");
+	    string choice = Console.ReadLine();
+	    switch (choice)
+	    {
+		case "1":
+		    AddTask();
+		    break;
+		case "2":
+		    ViewAllTasks();
+		    break;
+		case "3":
+		    MarkTaskComplete();
+		    break;
+		case "4":
+		    DeleteTask();
+		    break;
+		case "5":
+		    ViewIncompleteTasks();
+		    break;
+		case "6":
+		    return;
+		default:
+		    Console.WriteLine("Invalid choice. Press any key to continue.");
+		    Console.ReadKey();
+		    break;
+	    }
+	}
+    }
+    static void ViewIncompleteTasks()
+    {
+	Console.Clear();
+	int incompleteCounter = 0;
+	Console.WriteLine("Incomplete Tasks:");
+	for (int i = 0; i < taskCount; i++)
+	{
+	    if (!todoList[i].Contains("[DONE]"))
+	    {
+		Console.WriteLine($"{i + i}. {todoList[i]}");
+		incompleteCounter++;
+	    }
+	}
+	if (incompleteCounter == 0)
+	{
+	    Console.WriteLine("All tasks completed");
+	}
+	Console.WriteLine("Press any key to continue.");
+	Console.ReadKey():
+    }
+}
+
+
+	    
+	    	
