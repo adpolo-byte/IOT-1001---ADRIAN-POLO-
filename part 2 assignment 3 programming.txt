@@ -1,0 +1,37 @@
+AA03
+
+using System;
+
+
+namespace MyApplication
+{
+    class Program
+    {
+        static void Main(string[] args)
+	{
+	
+        decimal billAmount;
+        int tipPercentage;
+        int numberOfPeople;
+
+        Console.Write("Enter the bill amount: ");
+        billAmount = decimal.Parse(Console.ReadLine());
+
+        Console.Write("Enter the tip percentage: ");
+        tipPercentage = int.Parse(Console.ReadLine());
+
+        Console.Write("Enter the number of people: ");
+        numberOfPeople = int.Parse(Console.ReadLine());
+
+        
+        decimal tipAmount = billAmount * tipPercentage / 100;
+        decimal totalAmount = billAmount + tipAmount;
+        decimal eachPersonShare = totalAmount / numberOfPeople;
+
+        
+        Console.WriteLine($"You should leave a tip of ${tipAmount:F2}");
+        Console.WriteLine($"Total amount to pay: ${totalAmount:F2}");
+        Console.WriteLine($"Each person's share is ${eachPersonShare:F2}");
+	}
+    }
+}

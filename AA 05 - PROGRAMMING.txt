@@ -1,0 +1,259 @@
+using System;
+
+class TextAdventure
+{
+    // ==========================
+    // Global Variables
+    // ==========================
+    static string playerName;
+    static int playerHealth = 100;
+    static bool hasKey = false;
+    static bool hasTorch = false;
+    static bool treasureFound = false;
+
+    static string[] inventory = new string[3];
+    static int itemCount = 0;
+
+    static void Main(string[] args)
+    {
+        bool playAgain = true;
+
+        while (playAgain)
+        {
+            // Reset variables each game
+            playerHealth = 100;
+            hasKey = false;
+            hasTorch = false;
+            treasureFound = false;
+            itemCount = 0;
+
+            StartGame();
+            Scene1_Beach();
+
+            Console.WriteLine("\nPlay again? (yes/no)");
+            string response = Console.ReadLine().ToLower();
+            playAgain = (response == "yes" || response == "y");
+        }
+
+        Console.WriteLine("Thanks for playing!");
+    }
+
+    // ==========================
+    // Display Player Status
+    // ==========================
+    static void DisplayStatus()
+    {
+        Console.WriteLine("\n===== PLAYER STATUS =====");
+        Console.WriteLine("Name: " + playerName);
+        Console.WriteLine("Health: " + playerHealth);
+
+        Console.WriteLine("Inventory:");
+        if (itemCount == 0)
+            Console.WriteLine(" - (empty)");
+        else
+        {
+            for (int i = 0; i < itemCount; i++)
+                Console.WriteLine(" - " + inventory[i]);
+        }
+        Console.WriteLine("=========================\n");
+    }
+
+    // ==========================
+    // Start Game
+    // ==========================
+    static void StartGame()
+    {
+        Console.WriteLine("Welcome to *THE LOST TREASURE*!");
+
+        Console.Write("Enter your name: ");
+        playerName = Console.ReadLine();
+
+        Console.WriteLine("Rules: Make choices by entering numbers.");
+        Console.WriteLine("Your goal: Survive the island and find the treasure.\n");
+    }
+
+    // ==========================
+    // SCENE 1 — BEACH
+    // ==========================
+    static void Scene1_Beach()
+    {
+        Console.WriteLine("You wake up on a mysterious beach...");
+        Console.WriteLine("1. Explore the jungle");
+        Console.WriteLine("2. Search the beach");
+
+        int choice = GetChoice(1, 2);
+
+        if (choice == 1)
+            Scene2_Jungle();
+        else
+            Scene2_BeachSearch();
+    }
+
+    // ==========================
+    // SCENE 2A — JUNGLE
+    // ==========================
+    static void Scene2_Jungle()
+    {
+        Console.Clear();
+        Console.WriteLine("You enter the thick jungle. It's dark and humid.");
+
+        Console.WriteLine("You trip over a root and take 10 damage!");
+        playerHealth -= 10;
+
+        if (CheckHealth()) return;
+
+        Console.WriteLine("\nYou spot a torch on the ground.");
+        AddItem("Torch");
+        hasTorch = true;
+
+        Console.WriteLine("\nTwo paths appear:");
+        Console.WriteLine("1. Head toward a dark cave");
+        Console.WriteLine("2. Follow a trail to a village");
+
+        int choice = GetChoice(1, 2);
+
+        if (choice == 1)
+            Scene3_Cave();
+        else
+            Scene3_Village();
+    }
+
+    // ==========================
+    // SCENE 2B — BEACH SEARCH
+    // ==========================
+    static void Scene2_BeachSearch()
+    {
+        Console.Clear();
+        Console.WriteLine("You search the beach and find a shiny key half buried in the sand!");
+
+        AddItem("Key");
+        hasKey = true;
+
+        Console.WriteLine("\nA jungle path seems to lead inland.");
+        Console.WriteLine("1. Enter the jungle path");
+        Console.WriteLine("2. Stay on the beach");
+
+        int choice = GetChoice(1, 2);
+
+        if (choice == 1)
+            Scene2_Jungle();
+        else
+            EndGame("trap");
+    }
+
+    // ==========================
+    // SCENE 3A — CAVE
+    // ==========================
+    static void Scene3_Cave()
+    {
+        Console.Clear();
+        Console.WriteLine("You arrive at the entrance of a pitch-black cave.");
+
+        if (!hasTorch)
+        {
+            Console.WriteLine("It's too dark to enter without a torch!");
+            Console.WriteLine("As you turn around, a wild boar attacks!");
+            playerHealth -= 30;
+
+            if (CheckHealth()) return;
+
+            Scene3_Village();
+            return;
+        }
+
+        Console.WriteLine("Using your torch, you enter the cave.");
+        Console.WriteLine("Inside, you find an ancient treasure chest!");
+
+        if (hasKey)
+        {
+            Console.WriteLine("You use the key to open it...");
+            treasureFound = true;
+            EndGame("win");
+        }
+        else
+        {
+            Console.WriteLine("But it's locked... and you have no key.");
+            EndGame("lose");
+        }
+    }
+
+    // ==========================
+    // SCENE 3B — VILLAGE
+    // ==========================
+    static void Scene3_Village()
+    {
+        Console.Clear();
+        Console.WriteLine("You arrive at an abandoned village.");
+
+        Console.WriteLine("A trapdoor suddenly opens underneath you!");
+        playerHealth -= 40;
+
+        if (CheckHealth()) return;
+
+        Console.WriteLine("\nYou crawl out and see a cave entrance ahead.");
+        Scene3_Cave();
+    }
+
+    // ==========================
+    // END GAME
+    // ==========================
+    static void EndGame(string outcome)
+    {
+        Console.WriteLine("\n===== GAME OVER =====");
+
+        if (outcome == "win")
+            Console.WriteLine("You found the treasure! Congratulations!");
+        else if (outcome == "lose")
+            Console.WriteLine("You failed to obtain the treasure...");
+        else if (outcome == "health")
+            Console.WriteLine("You have died from your injuries...");
+        else if (outcome == "trap")
+            Console.WriteLine("You stayed too long on the beach and were caught by hostile tribesmen!");
+
+        DisplayStatus();
+    }
+
+    // ==========================
+    // Helper Functions
+    // ==========================
+    static int GetChoice(int min, int max)
+    {
+        int choice;
+        while (true)
+        {
+            Console.Write("Enter choice: ");
+
+            if (int.TryParse(Console.ReadLine(), out choice))
+            {
+                if (choice >= min && choice <= max)
+                    return choice;
+            }
+
+            Console.WriteLine("Invalid choice. Try again.");
+        }
+    }
+
+    static bool CheckHealth()
+    {
+        if (playerHealth <= 0)
+        {
+            EndGame("health");
+            return true;
+        }
+        return false;
+    }
+
+    static void AddItem(string item)
+    {
+        if (itemCount < 3)
+        {
+            inventory[itemCount] = item;
+            itemCount++;
+            Console.WriteLine(item + " added to inventory!");
+        }
+        else
+        {
+            Console.WriteLine("Inventory full! You cannot pick up the item.");
+        }
+    }
+}
